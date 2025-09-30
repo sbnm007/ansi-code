@@ -69,7 +69,7 @@ ansible all -m ping
 ## Additional Commands
 ```bash
 ansible all --list-hosts
-ansible all -m gather_facts
+ansible all -m gather_facts # This gives us information about the hosts which we can use to write scripts like ansible_distribution
 ansible all -m gather_facts --limit hostname  # This is for checking values and cross-verifying with playbook to debug issues 
 ```
 
@@ -130,4 +130,57 @@ Use different state values:
 - `absent` - Remove package
 - `latest` - Install/update to latest version
 
- 
+## Cross-Platform Considerations
+
+### Running Across Different Distributions
+Playbooks may fail for Ubuntu as they're written for `dnf` and Ubuntu needs `apt`.
+
+Use conditional statements based on distribution:
+```yaml
+- name: Install Apache on RedHat
+  dnf:
+    name: httpd
+    state: present
+  when: ansible_distribution == "RedHat"
+
+- name: Install Apache on Ubuntu
+  apt:
+    name: apache2
+    state: present
+  when: ansible_distribution == "Ubuntu"
+```
+
+## Universal Package Module
+Use the `package` module for cross-platform package management:
+
+```yaml
+# Works on both RedHat and Ubuntu automatically
+- name: Install Git (universal)
+  package:
+    name: git
+    state: present
+
+- name: Install Python (universal)
+  package:
+    name: python3
+    state: present
+
+# For packages with different names per distro
+- name: Install Apache (universal)
+  package:
+    name: "{{ 'httpd' if ansible_distribution == 'RedHat' else 'apache2' }}"
+    state: present
+
+# Multiple distributions with same package manager
+- name: Install Nginx on RHEL-based systems
+  dnf:
+    name: nginx
+    state: present
+  when: ansible_distribution in ["RedHat", "CentOS", "Rocky", "AlmaLinux"]
+```
+
+### Get Distribution Information
+```bash
+ansible all -m gather_facts --limit rhel1 | grep distribution
+```
+This command gets the specific distribution from the host.
