@@ -89,3 +89,45 @@ In the server you can go to this path:
 /var/log/
 ```
 `dnf.log` contains history of commands run. You can tail it and see the log entries.
+
+# Ansible Playbooks
+
+## Run Playbook
+```bash
+ansible-playbook install_apache.yml
+ansible-playbook book.yml --become --ask-become-pass
+```
+
+## Playbook Structure
+In the playbook you write scripts in YAML format:
+
+```yaml
+- hosts: all
+  become: true
+  tasks:
+  
+  - name: Update Repository Index
+    dnf:
+      update_cache: yes
+
+  - name: Install Package
+    dnf:
+      name: httpd
+      state: present
+      
+  - name: Check Installation
+    shell: command_here
+    register: result
+    
+  - name: Display Result
+    debug:
+      msg: "{{ result.stdout }}"
+```
+
+## Package States
+Use different state values:
+- `present` - Install package (default behavior)
+- `absent` - Remove package
+- `latest` - Install/update to latest version
+
+ 

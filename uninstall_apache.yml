@@ -1,0 +1,17 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Uninstall Apache
+      dnf:
+        name: httpd
+        state: absent
+    
+    - name: Remove Nodejs
+      dnf:
+        name: nodejs
+        state: absent
+
+    - name: Remove NPM
+      dnf:
+        name: npm
+        state: absent 

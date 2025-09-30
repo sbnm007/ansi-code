@@ -1,0 +1,29 @@
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Update Repository Index
+    dnf:
+      update_cache: yes
+
+  - name: Install Apache
+    dnf:
+      name: httpd
+  
+  - name: Install Nodejs
+    dnf:
+      name: nodejs
+      state: latest
+
+  - name: Check Node Installation
+    shell: node -v  
+    register: node_version
+  
+  - name: Check NPM Installation
+    shell: npm -v
+    register: npm_version
+  
+
+  - name: Display Node Version
+    debug:
+      msg: "Node.js version: {{ node_version.stdout }} {{ npm_version.stdout }}"
