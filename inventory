@@ -1,3 +1,4 @@
-2222
-2223
-2224
+[rhel_servers]
+rhel1 ansible_host=172.17.0.1 ansible_port=2222
+rhel2 ansible_host=172.17.0.1 ansible_port=2223
+rhel3 ansible_host=172.17.0.1 ansible_port=2224

@@ -35,13 +35,41 @@ redhat/ubi9    latest    a169546264dd    12 days ago    210MB
    ```
 
 ### 3) SSH into the Machines
-- Use your private key to connect to each server
+- Use your private key to connect to each server:
     ```bash
     ssh -i ~/.ssh/ansible root@172.17.0.1 -p 2222
     ssh -i ~/.ssh/ansible root@172.17.0.1 -p 2223
     ssh -i ~/.ssh/ansible root@172.17.0.1 -p 2224
     ```
 
+# Install Ansible
+If Ansible is not installed, install it with:
+```bash
+sudo apt install ansible  # For Ubuntu
+```
 
+# Configure Ansible
 
+## Inventory File
+The inventory file contains server_name, IP address, and port.
+
+Run this command to ping the servers:
+```bash
+ansible all -i inventory -m ping -u root --private-key ~/.ssh/ansible
+```
+- `-m` = module (the ping module is run)
+- You'll receive a pong from the Python interpreter, meaning that it works
+
+## Set up Config File
+Set up the config file `ansible.cfg`, then just run:
+```bash
+ansible all -m ping
+```
+
+## Additional Commands
+```bash
+ansible all --list-hosts
+ansible all -m gather_facts
+ansible all -m gather_facts --limit hostname  # This is for checking values and cross-verifying with playbook to debug issues
+```
 
