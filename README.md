@@ -70,6 +70,22 @@ ansible all -m ping
 ```bash
 ansible all --list-hosts
 ansible all -m gather_facts
-ansible all -m gather_facts --limit hostname  # This is for checking values and cross-verifying with playbook to debug issues
+ansible all -m gather_facts --limit hostname  # This is for checking values and cross-verifying with playbook to debug issues 
 ```
 
+## Package Management
+```bash
+ansible all -m dnf -a "update_cache=true"
+ansible all -m dnf -a "update_cache=true" --become --ask-become-pass 
+
+# Install Package
+ansible all -m dnf -a "name=docker"
+ansible all -m shell -a "dnf search podman"
+```
+
+## Log Files
+In the server you can go to this path:
+```
+/var/log/
+```
+`dnf.log` contains history of commands run. You can tail it and see the log entries.
