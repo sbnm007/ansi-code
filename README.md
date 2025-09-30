@@ -1,0 +1,47 @@
+# Create Key-Pair
+
+1. Generate SSH key pair:
+   ```bash
+   ssh-keygen -t ed25519 -C "ansible"
+   ```
+   - Enter path: `/home/${USER}/.ssh/ansible`
+   - You'll see `ansible` (Private Key) and `ansible.pub` (Public Key)
+
+# Goal: Create 3 Servers and Configure with Ansible
+
+## Strategy to Create 3 Servers:
+
+### 1) Download Docker Image
+```
+redhat/ubi9    latest    a169546264dd    12 days ago    210MB
+```
+- This is the free version of RHEL which doesn't require authentication to download
+
+### 2) Create Custom Image with SSH Public Certificate
+1. Go to project directory
+2. Build the image:
+   ```bash
+   docker build -t rhel-server:v1.0 .
+   ```
+3. Run 3 containers mapping port 22 to different host ports:
+   ```bash
+   docker run -d -p 2222:22 --name rhel-server-1 rhel-server:v1.0
+   docker run -d -p 2223:22 --name rhel-server-2 rhel-server:v1.0
+   docker run -d -p 2224:22 --name rhel-server-3 rhel-server:v1.0
+   ```
+4. Check running containers:
+   ```bash
+   docker ps
+   ```
+
+### 3) SSH into the Machines
+- Use your private key to connect to each server
+    ```bash
+    ssh -i ~/.ssh/ansible root@172.17.0.1 -p 2222
+    ssh -i ~/.ssh/ansible root@172.17.0.1 -p 2223
+    ssh -i ~/.ssh/ansible root@172.17.0.1 -p 2224
+    ```
+
+
+
+
